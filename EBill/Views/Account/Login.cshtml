@@ -1,0 +1,222 @@
+﻿﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            text-align: center;
+        }
+
+            .login-container h2 {
+                margin-bottom: 20px;
+                color: #333;
+            }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+            .input-group input {
+                width: 100%;
+                padding: 12px;
+                padding-left: 15px;
+                border: 1px solid #ddd;
+                border-radius: 25px;
+                outline: none;
+                font-size: 16px;
+            }
+
+        .login-btn {
+            width: 100%;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            .login-btn:hover {
+                background: #5563c1;
+            }
+
+        .forgot-password, .register-link {
+            display: block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #667eea;
+            font-size: 14px;
+        }
+
+            .forgot-password:hover, .register-link:hover {
+                text-decoration: underline;
+            }
+
+        #passwordError, #usernameError {
+            color: red;
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form asp-controller="Login" asp-action="LoginAsync" method="post">
+            <div class="input-group">
+                <input type="text" placeholder="Username" id="username" name="username">
+                <span id="usernameError"</span>
+            </div>
+            <div class="input-group">
+                <input type="password" placeholder="Password" id="password" name="password">
+                <span id="passwordError"></span>
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+            <a class="forgot-password">Forgot Password?</a>
+            <a asp-controller="Account" asp-action="Register" class="register-link">Don't have an account? Register</a>
+        </form>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.all.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+</body>
+</html>
+
+<script>
+
+    $('.login-btn').on('click', function (event) {
+
+       // alert("Button Clicked")
+        event.preventDefault();
+        const username = $('#username').val();
+        const password = $('#password').val();
+
+        debugger;
+
+        $('#usernameError').text("");
+        $('#passwordError').text("");
+        if (!username) {
+            $('#usernameError').text("Username is required!!");
+        }
+        if (!password) {
+            $('#passwordError').text("Password is required!");
+        }
+
+        const user = {email:username,password:password};
+
+        if(username && password){
+             $.ajax({
+                    url: `/Account/Login`,
+                    type: 'POST',
+                    data: user,
+                    success: function (response) {
+                        debugger;
+                        if (response.status == 'Success') {
+                            window.location.href = "/Home/Index";
+
+                        }
+                        else {
+                            alert(response.message)
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error)
+                    }
+                });
+
+
+
+        }
+
+    });
+
+
+    $('#username').on('input', function () {
+        const username = $(this).val();
+        if (username) {
+            $('#usernameError').text("");
+        } else {
+            $('#usernameError').text("Username is required!!");
+        }
+    });
+
+
+    $('#password').on('input', function () {
+        const password = $(this).val();
+        if (password) {
+            $('#passwordError').text("");
+        } else {
+            $('#passwordError').text("Username is required!!");
+        }
+    })
+</script>
+
+<script>
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-left",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+</script>
