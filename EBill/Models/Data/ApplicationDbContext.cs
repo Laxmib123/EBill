@@ -8,6 +8,7 @@ namespace EBill.Models.Data
     {
         
         public DbSet<Test> tests {  get; set; }
+        public DbSet<Category> categories { get; set; }
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
 

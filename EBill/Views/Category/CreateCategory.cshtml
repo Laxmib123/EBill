@@ -1,0 +1,72 @@
+﻿<div class="row">
+    <div class="col-md-4">
+        <section>
+            <form id="CategoryCreate" asp-action="CategoryCreate" method="post">
+                <h2>Create Category.</h2>
+                <hr />
+                <div class="mb-3">
+                    <label  class="control-label"></label>
+                    <input id="txtName" class="form-control" />
+                    <span id="txtNameError"></span>
+
+                </div>
+                <div>
+                    <button id="btnSaveCategory" type="submit" class="w-100 btn btn-lg btn-primary btnSave">Save</button>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $(document).ready(function () {
+      
+
+    });
+
+    $(document).on('click', '.btnSave',function(){
+        debugger;
+        event.preventDefault();
+        var obj = {
+            name: $("#txtName").val()
+        }
+
+        $('#txtNameError').text("");
+
+        if (!obj.name) {
+            $('#txtNameError').text("Please Enter Category Name!");
+        } else {
+                    $.ajax({
+                    url: `/Category/CreateCategory`,
+                    type: 'POST',
+                    data: obj,
+                        success: function (response) {
+                                debugger;
+                                if (response.status == 'Success') {
+                                    $("#txtName").val(''); 
+                                    window.location.href = "/Home/Index";
+
+                                }
+                                else {
+                                    alert(response.message);
+                                    $("#txtName").val('');
+                                }
+                  
+                        },
+                        error: function (error) {
+                                console.log(error)
+                        }
+                   });
+        }
+
+        $('#txtName').on('input', function () {
+            const name = $(this).val();
+            if (name) {
+                $('#txtNameError').text("");
+            } else {
+                $('#txtNameError').text("Category name is required!!");
+            }
+        });
+
+    })
+</script>

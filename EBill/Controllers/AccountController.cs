@@ -41,8 +41,15 @@ namespace EBill.Controllers
                 });
 
             }
+            else
+            {
+                return Json(new
+                {
+                    Status = "Failed",
+                    Message = "Invalid Password or Email!!"
+                });
 
-            return View(result);
+            }
 
 
         }
@@ -61,16 +68,16 @@ namespace EBill.Controllers
 
             if (result.Succeeded)
             {
-                var roleExists = await _roleManager.RoleExistsAsync("Manager");
+                var roleExists = await _roleManager.RoleExistsAsync("Admin");
 
                 if (!roleExists)
                 {
-                    var role = new ApplicationRole { Name = "Manager" };
+                    var role = new ApplicationRole { Name = "Admin" };
                     await _roleManager.CreateAsync(role);
                 }
 
                 //Assign Role to user..................
-                await _userManager.AddToRoleAsync(user, "Manager");
+                await _userManager.AddToRoleAsync(user, "Admin");
 
                 return Json(new
                 {

@@ -1,0 +1,23 @@
+﻿﻿﻿
+<ul class="nav flex-column mt-auto">
+    <li class="nav-item">
+        <a class="nav-link text-white" data-bs-toggle="collapse" href="#accountSubmenu" role="button" aria-expanded="false" aria-controls="accountSubmenu">
+            Account
+        </a>
+        <div class="collapse" id="accountSubmenu">
+            <ul class="nav flex-column ms-3">
+               
+                    <li class="nav-item">
+                        <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                            <button type="submit" class="btn btn-link nav-link text-start text-white" style="text-decoration: none;">Logout</button>
+                        </form>
+                    </li>
+              
+                    <li class="nav-item">
+                        <a class="nav-link text-white" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </li>
+</ul>
