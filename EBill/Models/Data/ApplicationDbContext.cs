@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using EBill.Models.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace EBill.Models.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
     {
-        public DbSet<Product> Products { get; set; }
+        
+        public DbSet<Test> tests {  get; set; }
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
 
@@ -21,9 +23,9 @@ namespace EBill.Models.Data
                 new ApplicationRole { Id = 3, Name = "Staff", NormalizedName = "STAFF", ConcurrencyStamp = "0c872e6d-292e-4bd5-a383-f21c486209aa" }
             );
 
-            // modelBuilder.Entity<IdentityUserRole<string>>().HasData(
-            //    new IdentityUserRole<string> { UserId = existingUserId, RoleId = adminRoleId }
-            //);
+           // modelBuilder.Entity<IdentityUserRole<string>>().HasData(
+           //    new IdentityUserRole<string> { UserId = existingUserId, RoleId = adminRoleId }
+           //);
 
         }
 
