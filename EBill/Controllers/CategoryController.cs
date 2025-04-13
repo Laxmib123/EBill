@@ -15,9 +15,20 @@ namespace EBill.Controllers
             _context = context;
         }
 
+        [HttpGet]
         public async Task <IActionResult> GetAllCategory()
         {
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ListOfCAtegory()
+        {
+            var data = await _context.categories.ToListAsync();
+            return Json(new { 
+                Data = data,
+                Status = "Success",
+            });
         }
 
         public async Task<IActionResult> GetById(int id)

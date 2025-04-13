@@ -1,0 +1,60 @@
+﻿
+
+<div class="col-md-12">
+    <h2>List of Category</h2>
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">S.N</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">CreatedBy</th>
+                        <th scope="col">CreatedDate</th>
+                        <th scope="col">LastModifiedBy</th>
+                        <th scope="col">LastModifiedDate</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="listOfCategory">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+
+    $(document).ready(function () {
+        loadCategory();
+    }); 
+
+
+
+    function loadCategory(){
+        $.ajax({
+            url: `/Category/CreateCategory`,
+            type: 'POST',
+            data: obj,
+            success: function (response) {
+                debugger;
+                if (response.status == 'Success') {
+                    $("#txtName").val('');
+                    window.location.href = "/Home/Index";
+
+                }
+                else {
+                    alert(response.message);
+                    $("#txtName").val('');
+                }
+
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    }
+
+</script>
