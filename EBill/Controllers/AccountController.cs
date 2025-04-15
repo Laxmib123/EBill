@@ -30,31 +30,31 @@ namespace EBill.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginVM data)
         {
-            //var result = await _signInManager.PasswordSignInAsync(data.Email, data.Password, isPersistent: false, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(data.Email, data.Password, isPersistent: false, lockoutOnFailure: false);
 
-            //if (result.Succeeded)
-            //{
-
-            //    return Json(new
-            //    {
-            //        Status = "Success"
-            //    });
-
-            //}
-            //else
-            //{
-            //    return Json(new
-            //    {
-            //        Status = "Failed",
-            //        Message = "Invalid Password or Email!!"
-            //    });
-
-            //}
-
-            return Json(new
+            if (result.Succeeded)
             {
-                Status = "Success"
-            });
+
+                return Json(new
+                {
+                    Status = "Success"
+                });
+
+            }
+            else
+            {
+                return Json(new
+                {
+                    Status = "Failed",
+                    Message = "Invalid Password or Email!!"
+                });
+
+            }
+
+            //return Json(new
+            //{
+            //    Status = "Success"
+            //});
 
 
         }
