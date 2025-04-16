@@ -6,9 +6,9 @@ namespace EBill.Models.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
     {
-        
-        public DbSet<Test> tests {  get; set; }
+       
         public DbSet<Category> categories { get; set; }
+        public DbSet<Product> products { get; set; }
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
 

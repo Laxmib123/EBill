@@ -1,0 +1,83 @@
+﻿
+
+<div class="row">
+    <div class="col-md-4">
+        <section>
+            <form id="ProductCreate" asp-action="ProductCreate" method="post">
+                <h2>Create Product.</h2>
+                <hr />
+                <div class="mb-3">
+                    <label class="control-label">Category</label>
+                    <select class="form-control" id="ddlCategory"></select>
+                    <span class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="control-label">Name</label>
+                    <input class="form-control" id="name"/>
+                    <span class="text-danger" id="nameError"></span>
+                </div>
+                <div class="mb-3">
+                    <label  class="control-label">Purchase Price</label>
+                    <input class="form-control" id="purchasePrice"/>
+                    <span  class="text-danger" id="purchaseError"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="control-label">Selling Price</label>
+                    <input  class="form-control" id="sellingPrice"/>
+                    <span  class="text-danger" id="sellingError"></span>
+                </div>
+                <div>
+                    <button id="product-submit" type="submit" class="w-100 btn btn-lg btn-primary btnSave">Save</button>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script>
+    $(document).ready(function () {
+        loadCategory();
+    });
+
+
+    $(document).on('click', '.btnSave', function () {
+
+       alert("Button click save!!")
+
+    })
+
+
+    function loadCategory() {
+
+        let option = '<option value="0">Please select a sub category</option>';
+        $.ajax({
+            url: `/Category/ListOfCAtegory`,
+            type: 'GET',
+            success: function (response) {
+                debugger;
+                let data = response.data;
+                if (response.status == 'Success') {
+
+                    for (let i = 0; i < data.length; i++) {
+                        const element = data[i];
+                        option += `<option value="${element.id}">${element.name}</option>`;
+                    }
+                    $('#ddlCategory').html(option);
+
+                }
+                else {
+                    alert(response.message);
+                    $("#txtName").val('');
+                }
+
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    }
+
+</script>
