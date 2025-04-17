@@ -9,7 +9,7 @@
                 <div class="mb-3">
                     <label class="control-label">Category</label>
                     <select class="form-control" id="ddlCategory"></select>
-                    <span class="text-danger"></span>
+                    <span class="text-danger" id="categoryIdError"></span>
                 </div>
                 <div class="mb-3">
                     <label class="control-label">Name</label>
@@ -44,11 +44,126 @@
 
 
     $(document).on('click', '.btnSave', function () {
+        event.preventDefault();
+        debugger;
 
-       alert("Button click save!!")
+        $('#categoryIdError').text('');
+        $('#nameError').text('');
+        $('#purchaseError').text('');
+        $('#sellingError').text('');
+
+        const obj = {
+            name: $('#name').val(),
+            purchasePrice: $('#purchasePrice').val(),
+            sellingPrice: $('#sellingPrice').val(),
+            categoryId: $('#ddlCategory').val()
+        };
+        let isValid = true;
+
+
+        if (!obj.categoryId || parseInt(obj.categoryId) === 0) {
+
+            $('#categoryIdError').text("Please select the value!!");
+            isValid = false;
+
+
+        }
+        if(!obj.name){
+            $('#nameError').text("Please enter product name!!");
+            isValid = false;
+
+        }
+
+        if (!obj.purchasePrice) {
+            $('#purchaseError').text("Please product purchase price!!");
+            isValid = false;
+
+        }
+
+        if(!obj.sellingPrice){
+            $('#sellingError').text("Please product selling price!!");
+            isValid = false;
+
+
+        }
+
+        if(isValid){
+
+            $.ajax({
+                url: `/Product/SaveProduct`,
+                type: 'POST',
+                data: obj,
+                success: function (response) {
+                    debugger;
+                    if (response.status == 'Success') {
+                        // $("#txtName").val('');
+                        // window.location.href = "/Home/Index";
+
+                        alert("Product saved successfully!");
+                        $('#name').val('');
+                        $('#purchasePrice').val('');
+                        $('#sellingPrice').val('');
+                        $('#ddlCategory').val('');
+
+                    }
+                    else {
+                        alert(response.message);
+                        $("#txtName").val('');
+                    }
+
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            });
+
+
+           
+
+        }else{
+           // alert("Unable to save!!");
+        }
+   
 
     })
 
+    $('#name').on('input', function () {
+        const name = $(this).val();
+        if (name) {
+            $('#nameError').text("");
+        } else {
+            $('#nameError').text("Please enter product name!!");
+        }
+    });
+
+    
+    $('#purchasePrice').on('input', function () {
+        const name = $(this).val();
+        if (purchasePrice) {
+            $('#purchaseError').text("");
+        } else {
+            $('#purchaseError').text("Please product purchase price!!");
+        }
+    });
+
+    $('#sellingPrice').on('input', function () {
+        const sellingPrice = $(this).val();
+        if (sellingPrice) {
+            $('#sellingError').text("");
+        } else {
+            $('#sellingError').text("Please product selling price!!");
+        }
+    });
+
+
+    $('#ddlCategory').on('input', function () {
+        const categoryId = $(this).val();
+        if (categoryId) {
+            $('#categoryIdError').text("");
+        } else {
+            $('#categoryIdError').text("Please select the value!!");
+        }
+    });
 
     function loadCategory() {
 

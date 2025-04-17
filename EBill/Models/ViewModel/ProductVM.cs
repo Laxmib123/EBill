@@ -2,6 +2,9 @@
 {
     public class ProductVM
     {
-        public string name { get; set; }
+        public string Name { get; set; }
+        public int PurchasePrice { get; set; }
+        public int SellingPrice { get; set; }
+        public int CategoryId { get; set; }
     }
 }
