@@ -1,0 +1,320 @@
+﻿
+<div class="col-md-12">
+    <h2>List of Category</h2>
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">S.N</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Purchase Price</th>
+                        <th scope="col">Selling Price</th>
+                        <th scope="col">CreatedDate</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="listOfProduct">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Update product.</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" id="btnClose" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="">
+                    <div class="mb-3">
+                        <label class="control-label">Category</label>
+                        <select class="form-control" id="ddlCategory"></select>
+                        <span class="text-danger" id="categoryIdError"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="control-label">Name</label>
+                        <input class="form-control" id="name" />
+                        <input type="hidden" id="hdIdProduct" />
+                        <span class="text-danger" id="nameError"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="control-label">Purchase Price</label>
+                        <input class="form-control" id="purchasePrice" />
+                        <span class="text-danger" id="purchaseError"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="control-label">Selling Price</label>
+                        <input class="form-control" id="sellingPrice" />
+                        <span class="text-danger" id="sellingError"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btnUpdate">Update</button>
+                <button type="button" class="btn btn-danger" id="btnClose">Clear</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+
+    $(document).ready(function () {
+        loadProduct();
+    });
+
+    $(document).on('click', '.btnEdit', function () {
+
+        var key = $(this).data('key');
+        $.ajax({
+            url: `/Product/GetProductById/${key}`,
+            type: 'GET',
+            success: function (response) {
+                debugger;
+                var data = response.data;
+                if (response.status == 'Success') {
+                    let categoryId = data.categoryId;
+                    loadCategory(categoryId);
+                    $("#name").val(data.name);
+                    $('#hdIdProduct').val(data.id);
+                    $('#purchasePrice').val(data.purchasePrice);
+                    $('#sellingPrice').val(data.sellingPrice);
+                    $("#updateModal").modal('show');
+                }
+                else {
+                    alert(response.message);
+                    $("#txtName").val('');
+                }
+
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+        $("#updateModal").modal('show');
+
+    });
+
+    $(document).on('click', '.btnDelete', function () {
+
+    });
+
+
+    $(document).on('click', '.btnView', function () {
+
+    });
+
+    $(document).on('click', '.btnUpdate', function () {
+
+        event.preventDefault();
+        debugger;
+
+        $('#categoryIdError').text('');
+        $('#nameError').text('');
+        $('#purchaseError').text('');
+        $('#sellingError').text('');
+
+        const obj = {
+            id: $('#hdIdProduct').val(),
+            name: $('#name').val(),
+            purchasePrice: $('#purchasePrice').val(),
+            sellingPrice: $('#sellingPrice').val(),
+            categoryId: $('#ddlCategory').val()
+        };
+        let isValid = true;
+
+
+        if (!obj.categoryId || parseInt(obj.categoryId) === 0) {
+
+            $('#categoryIdError').text("Please select the value!!");
+            isValid = false;
+
+
+        }
+        if (!obj.name) {
+            $('#nameError').text("Please enter product name!!");
+            isValid = false;
+
+        }
+
+        if (!obj.purchasePrice) {
+            $('#purchaseError').text("Please product purchase price!!");
+            isValid = false;
+
+        }
+
+        if (!obj.sellingPrice) {
+            $('#sellingError').text("Please product selling price!!");
+            isValid = false;
+
+
+        }
+
+        if (isValid) {
+
+            $.ajax({
+                url: `/Product/UpdateProduct`,
+                type: 'POST',
+                data: obj,
+                success: function (response) {
+                    debugger;
+                    if (response.status == 'Success') {
+                        $("#updateModal").modal('hide');
+                        loadProduct();
+
+                    }
+                    else {
+                        alert(response.message);
+                        $("#txtName").val('');
+                    }
+
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            });
+
+
+
+
+        } else {
+            // alert("Unable to save!!");
+        }
+
+    });
+
+    function loadProduct() {
+        $.ajax({
+            url: `/Product/ListOfProduct`,
+            type: 'GET',
+            success: function (response) {
+                debugger;
+                var data = response.data;
+                if (response.status == 'Success') {
+                    debugger;
+                    var htmlstring = "";
+                    $.each(data, function (i, x) {
+
+                        htmlstring += "<tr>";
+                        htmlstring += "<td>" + (i + 1) + "</td>";
+                        htmlstring += "<td>" + x.name + "</td>";
+                        htmlstring += "<td>" + x.category + "</td>";
+                        htmlstring += "<td>" + x.purchasePrice + "</td>";
+                        htmlstring += "<td>" + x.sellingPrice + "</td>";
+                        htmlstring += "<td>" + x.createdDate + "</td>";
+                        htmlstring += "<td>";
+                        htmlstring += "<button type= 'button' class='btn btn-secondary btnEdit btn-sm me-2' data-key='" + x.id + "'>Edit</button>";
+                        htmlstring += "<button type= 'button' class='btn btn-danger btnDelete btn-sm me-2 ' data-key='" + x.id + "'>Delete</button>";
+                        htmlstring += "<button type= 'button' class='btn btn-success btnView btn-sm ' data-key='" + x.id + "'>View</button>";
+
+                        htmlstring += "</td>";
+
+
+                    });
+                    $('#listOfProduct').html(htmlstring);
+
+                }
+                else {
+                    alert(response.message);
+                    $("#txtName").val('');
+                }
+
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+
+    }
+
+
+    function loadCategory(categoryId) {
+
+        let option = '<option value="0">Please select a category</option>';
+        if (!categoryId || categoryId == 0) {
+            $('#ddlSubCategory').html(option)
+            return;
+        }
+
+        $.ajax({
+            url: `/Category/ListOfCAtegory`,
+            type: 'GET',
+            success: function (response) {
+                debugger;
+                let data = response.data;
+                if (response.status == 'Success') {
+
+                    for (let i = 0; i < data.length; i++) {
+                        const element = data[i];
+                        option += `<option value="${element.id}">${element.name}</option>`;
+                    }
+                    $('#ddlCategory').html(option);
+                    $('#ddlCategory').val(categoryId);
+
+                }
+                else {
+                    alert(response.message);
+                    $("#txtName").val(categoryId);
+                }
+
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    
+
+
+
+    }
+
+
+    $('#name').on('input', function () {
+        const name = $(this).val();
+        if (name) {
+            $('#nameError').text("");
+        } else {
+            $('#nameError').text("Please enter product name!!");
+        }
+    });
+
+
+    $('#purchasePrice').on('input', function () {
+        const name = $(this).val();
+        if (purchasePrice) {
+            $('#purchaseError').text("");
+        } else {
+            $('#purchaseError').text("Please product purchase price!!");
+        }
+    });
+
+    $('#sellingPrice').on('input', function () {
+        const sellingPrice = $(this).val();
+        if (sellingPrice) {
+            $('#sellingError').text("");
+        } else {
+            $('#sellingError').text("Please product selling price!!");
+        }
+    });
+
+
+    $('#ddlCategory').on('input', function () {
+        const categoryId = $(this).val();
+        if (categoryId) {
+            $('#categoryIdError').text("");
+        } else {
+            $('#categoryIdError').text("Please select the value!!");
+        }
+    });
+
+
+
+
+</script>
