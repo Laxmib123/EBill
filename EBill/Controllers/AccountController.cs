@@ -73,16 +73,16 @@ namespace EBill.Controllers
 
             if (result.Succeeded)
             {
-                var roleExists = await _roleManager.RoleExistsAsync("Admin");
+                var roleExists = await _roleManager.RoleExistsAsync("Staff");
 
                 if (!roleExists)
                 {
-                    var role = new ApplicationRole { Name = "Admin" };
+                    var role = new ApplicationRole { Name = "Staff" };
                     await _roleManager.CreateAsync(role);
                 }
 
                 //Assign Role to user..................
-                await _userManager.AddToRoleAsync(user, "Admin");
+                await _userManager.AddToRoleAsync(user, "Staff");
 
                 return Json(new
                 {
@@ -111,7 +111,7 @@ namespace EBill.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("", "");
+            return RedirectToAction("Login", "Account");
         }
     }
 }

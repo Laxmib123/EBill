@@ -13,7 +13,14 @@
                         <th scope="col">CreatedDate</th>
                         <th scope="col">LastModifiedBy</th>
                         <th scope="col">LastModifiedDate</th>
-                        <th scope="col">Action</th>
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                            {
+                                 <th scope="col">Action</th>
+                            }
+
+                        }
                     </tr>
                 </thead>
                 <tbody id="listOfCategory">
@@ -156,13 +163,9 @@
 
     })
 
-    $(document).on('click', '', function () {
-
-    })
-
-
 
     function loadCategory(){
+        const isNonAdmin = @((User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin") || User.IsInRole("Manager")).ToString().ToLower());
         $.ajax({
             url: `/Category/ListOfCAtegory`,
             type: 'GET',
@@ -181,10 +184,11 @@
                         htmlstring += "<td>" + x.lastModifiedBy + "</td>";
                         htmlstring += "<td>" + x.lastModifiedDate + "</td>";
                         htmlstring += "<td>";
-                        htmlstring += "<button type= 'button' class='btn btn-secondary btnEdit btn-sm me-2' data-key='" + x.id + "'>Edit</button>";
-                        htmlstring += "<button type= 'button' class='btn btn-danger btnDelete btn-sm me-2 ' data-key='" + x.id + "'>Delete</button>";
-                        htmlstring += "<button type= 'button' class='btn btn-success btnView btn-sm ' data-key='" + x.id + "'>View</button>";
-
+                        if (isNonAdmin) {
+                            htmlstring += "<button type='button' class='btn btn-secondary btnEdit btn-sm me-2' data-key='" + x.id + "'>Edit</button>";
+                            htmlstring += "<button type='button' class='btn btn-danger btnDelete btn-sm me-2' data-key='" + x.id + "'>Delete</button>";
+                            htmlstring += "<button type='button' class='btn btn-success btnView btn-sm' data-key='" + x.id + "'>View</button>";
+                        }
                         htmlstring += "</td>";
 
 

@@ -129,7 +129,9 @@ namespace EBill.Controllers
                 LastModifiedDate = data.LastModifiedDate.ToString(),
                 CategoryId = data.Category.Id,
                 SellingPrice = data.SellingPrice,
-                PurchasePrice = data.PurchasePrice
+                CategoryName = data.Category.Name,
+                PurchasePrice = data.PurchasePrice,
+                Stock = data.Stock
             };
 
             return Json(new
@@ -189,6 +191,28 @@ namespace EBill.Controllers
             }
 
 
+        }
+
+        [HttpGet]
+
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            var category = await _context.products.FirstOrDefaultAsync(x => x.Id == id);
+            if (category != null)
+            {
+                category.status = false;
+                await _context.SaveChangesAsync();
+
+                return Json(new
+                {
+                    Status = "Success",
+                    Message = "Category deleted successfully!!"
+                });
+            }
+            return Json(new
+            {
+
+            });
         }
 
 

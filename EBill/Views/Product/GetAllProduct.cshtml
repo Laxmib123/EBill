@@ -12,7 +12,14 @@
                         <th scope="col">Purchase Price</th>
                         <th scope="col">Selling Price</th>
                         <th scope="col">CreatedDate</th>
-                        <th scope="col">Action</th>
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                            {
+                                <th scope="col">Action</th>
+                            }
+
+                        }
                     </tr>
                 </thead>
                 <tbody id="listOfProduct">
@@ -62,6 +69,38 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="viewModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Details of <span class="vname"></span></h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <p>Name: <span id="pName"></span></p>
+                <p>Category: <span id="pCategory"></span></p>
+                <p>PurchasePrice: <span id="pPurchasePrice"></span></p>
+                <p>SellingPrice: <span id="pSellingPrice"></span></p>
+                <p>Stock: <span id="stock"></span></p>
+                <p>CreatedBy: <span id="createdBy"></span></p>
+                <p>CreatedDate: <span id="createdDate"></span></p>
+                <p>LastModifiedBy: <span id="lastModifiedBy"></span></p>
+                <p>LastModifiedDate: <span id="lastModifiedDate"></span></>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script>
@@ -104,10 +143,73 @@
 
     $(document).on('click', '.btnDelete', function () {
 
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var key = $(this).data('key');
+                $.ajax({
+                    url: `/Product/DeleteProduct/${key}`,
+                    type: 'GET',
+                    success: function (response) {
+                        debugger;
+                        var data = response.data;
+                        if (response.status == 'Success') {
+                            loadProduct();
+                        }
+                        else {
+                            alert(response.message);
+                        }
+
+                    },
+                    error: function (error) {
+                        console.log(error)
+                    }
+                });
+            }
+        });
+
     });
 
 
     $(document).on('click', '.btnView', function () {
+
+        var key = $(this).data('key');
+        $.ajax({
+            url: `/Product/GetProductById/${key}`,
+            type: 'GET',
+            success: function (response) {
+                var data = response.data;
+                debugger;
+                if (response.status == 'Success') { 
+                    $("#pName").html(data.name);
+                    $("#pCategory").html(data.categoryName);
+                    $('#pPurchasePrice').html(data.purchasePrice);
+                    $('#pSellingPrice').html(data.sellingPrice);
+                    $('#createdBy').html(data.createdBy);
+                    $('#createdDate').html(data.createdDate);
+                    $('#lastModifiedBy').html(data.lastModifiedBy);
+                    $('#lastModifiedDate').html(data.lastModifiedDate);
+                    $('#stock').html(data.stock);
+                    $("#viewModal").modal('show');
+                }
+                else {
+                    alert(response.message);
+                    $("#txtName").val('');
+                }
+
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+
 
     });
 
@@ -191,6 +293,7 @@
     });
 
     function loadProduct() {
+        const isTrue = @((User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin") || User.IsInRole("Manager")).ToString().ToLower());
         $.ajax({
             url: `/Product/ListOfProduct`,
             type: 'GET',
@@ -210,9 +313,11 @@
                         htmlstring += "<td>" + x.sellingPrice + "</td>";
                         htmlstring += "<td>" + x.createdDate + "</td>";
                         htmlstring += "<td>";
-                        htmlstring += "<button type= 'button' class='btn btn-secondary btnEdit btn-sm me-2' data-key='" + x.id + "'>Edit</button>";
-                        htmlstring += "<button type= 'button' class='btn btn-danger btnDelete btn-sm me-2 ' data-key='" + x.id + "'>Delete</button>";
-                        htmlstring += "<button type= 'button' class='btn btn-success btnView btn-sm ' data-key='" + x.id + "'>View</button>";
+                        if (isTrue) {
+                            htmlstring += "<button type= 'button' class='btn btn-secondary btnEdit btn-sm me-2' data-key='" + x.id + "'>Edit</button>";
+                            htmlstring += "<button type= 'button' class='btn btn-danger btnDelete btn-sm me-2 ' data-key='" + x.id + "'>Delete</button>";
+                            htmlstring += "<button type= 'button' class='btn btn-success btnView btn-sm ' data-key='" + x.id + "'>View</button>";
+                        }
 
                         htmlstring += "</td>";
 
