@@ -43,8 +43,7 @@
                         success: function (response) {
                                 debugger;
                                 if (response.status == 'Success') {
-                                    $("#txtName").val(''); 
-                                    window.location.href = "/Home/Index";
+                                   alert(response.message);
 
                                 }
                                 else {
@@ -53,7 +52,7 @@
                                         title: "Oops...",
                                         text: response.message,
                                     });
-                                    $("#txtName").val('');
+                                    // $("#txtName").val('');
                                 }
                   
                         },

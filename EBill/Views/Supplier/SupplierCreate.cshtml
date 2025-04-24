@@ -1,0 +1,184 @@
+﻿
+<div class="row">
+    <div class="col-md-4">
+        <section>
+            <form id="SupplierCreate" asp-action="SupplierCreate" method="post">
+                <h2>Create Supplier</h2>
+                <hr />
+                
+                <div class="mb-3">
+                    <label class="control-label">Name</label>
+                    <input class="form-control" id="txtName" />
+                    <span id="txtNameError" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="control-label">ContactPerson</label>
+                    <input class="form-control" id="txtcontactPerson" />                   
+                    <span id="txtcontactPersonError" class="text-danger"></span>
+
+                </div>
+
+                <div class="mb-3">
+                    <label  class="control-label">PhoneNumber</label>
+                    <input  class="form-control" id="txtphoneNumber"/>
+                    <span id="txtphoneNumberError" class="text-danger"></span>
+
+                </div>
+
+                <div class="mb-3">
+                    <label class="control-label">Email</label>
+                    <input class="form-control" id="txtemail" type="email" />
+                    <span id="txtemailError" class="text-danger"></span>
+
+                </div>
+
+                <div class="mb-3">
+                    <label class="control-label">Address</label>
+                    <textarea class="form-control" id="txtaddress"></textarea>
+                    <span id="txtaddressError" class="text-danger"></span>
+                </div>
+
+                <div>
+                    <button class="w-100 btn btn-lg btn-primary btnSave">Save</button>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+ <script>
+     $(document).on('click', '.btnSave', function () {
+         debugger;
+         event.preventDefault();
+
+         var obj = {
+             name: $("#txtName").val(),
+             contactPerson: $("#txtcontactPerson").val(),
+             phoneNumber: $("#txtphoneNumber").val(),
+             email: $("#txtemail").val(),
+             address: $("#txtaddress").val()
+         }
+
+         $('#txtNameError').text("");
+         $('#txtcontactPersonError').text("");
+         $('#txtphoneNumberError').text("");
+         $('#txtemailError').text("");
+         $('#txtaddressError').text("");
+
+         let isValid = true;
+
+         if (!obj.name) {
+             $('#txtNameError').text("Please Enter Suppier Name!");
+             isValid = false;
+         }
+
+         if (!obj.contactPerson) {
+             $('#txtcontactPersonError').text("Please Enter ContactPerson Name!");
+             isValid = false;
+
+         }
+         if (!obj.phoneNumber) {
+             $('#txtphoneNumberError').text("Please Enter Phone Number!");
+             isValid = false;
+         }
+
+         if (!obj.email) {
+            $('#txtemailError').text("Please Enter Email!");
+             isValid = false;
+         }
+
+         if (!obj.address) {
+            $('#txtaddressError').text("Please Enter Address!");
+             isValid = false;
+
+         }
+
+         if (isValid) {
+             $.ajax({
+                url: `/Supplier/SaveSupplier`,
+                 type: 'POST',
+                 data: obj,
+                 success: function (response) {
+                     debugger;
+                     if (response.status == 'Success') {
+                        alert(response.message);
+                         $("#txtName").val('');
+                         $("#txtcontactPerson").val('');
+                         $("#txtphoneNumber").val('');
+                         $("#txtemail").val('');
+                         $("#txtaddress").val('');
+
+
+                     }
+                     else {
+                         Swal.fire({
+                             icon: "error",
+                             title: "Oops...",
+                             text: response.message,
+                         });
+                     }
+
+                 },
+                 error: function (error) {
+                     console.log(error)
+                 }
+             });
+
+            
+         }
+
+
+
+        $('#txtName').on('input', function () {
+            const name = $(this).val();
+            if (name) {
+                $('#txtNameError').text("");
+            } else {
+                $('#txtNameError').text("Suppier name is required!!");
+            }
+        });
+
+
+
+        $('#txtcontactPerson').on('input', function () {
+            const name = $(this).val();
+            if (name) {
+                $('#txtcontactPersonError').text("");
+            } else {
+                $('#txtcontactPersonError').text("ContactPerson is required!!");
+            }
+        });
+
+
+        $('#txtphoneNumber').on('input', function () {
+            const name = $(this).val();
+            if (name) {
+                $('#txtphoneNumberError').text("");
+            } else {
+                $('#txtphoneNumberError').text("PhoneNumber is required!!");
+            }
+        });
+
+
+        $('#txtemail').on('input', function () {
+            const name = $(this).val();
+            if (name) {
+                $('#txtemailError').text("");
+            } else {
+                $('#txtemailError').text("Email is required!!");
+            }
+        });
+
+        $('#txtaddress').on('input', function () {
+            const name = $(this).val();
+            if (name) {
+                $('#txtaddressError').text("");
+            } else {
+                $('#txtaddressError').text("Address is required!!");
+            }
+        });
+
+     });
+
+ </script>
