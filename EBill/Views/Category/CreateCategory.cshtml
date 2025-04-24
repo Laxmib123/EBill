@@ -48,7 +48,11 @@
 
                                 }
                                 else {
-                                    alert(response.message);
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Oops...",
+                                        text: response.message,
+                                    });
                                     $("#txtName").val('');
                                 }
                   

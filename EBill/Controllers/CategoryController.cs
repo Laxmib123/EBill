@@ -4,6 +4,7 @@ using EBill.Models.Entities;
 using EBill.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EBill.Controllers
@@ -70,6 +71,18 @@ namespace EBill.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCategory(CategoryVM data)
         {
+
+            bool isAvailable = CheckIsAvailable(data.name);
+
+            if (isAvailable) {
+                return Json(new
+                {
+                    Status = "Failed",
+                    Message = "Category named " + "'"+data.name+"'" + " is already present!!"
+                });
+            }
+
+            
             int cretedBy = GetCreatedBy();
 
             if (data == null)
@@ -170,6 +183,22 @@ namespace EBill.Controllers
             {
 
             });
+        }
+
+
+        public bool CheckIsAvailable(string name)
+        {
+
+            var data = _context.categories.Where(x  => x.Name == name).FirstOrDefault();
+
+            if (data == null)
+            {
+
+                return false;
+                
+            }
+            return true;
+
         }
 
     }
