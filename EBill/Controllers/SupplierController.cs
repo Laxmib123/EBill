@@ -1,7 +1,9 @@
-﻿using EBill.Models.Data;
+﻿using EBill.DTO;
+using EBill.Models.Data;
 using EBill.Models.Entities;
 using EBill.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EBill.Controllers
 {
@@ -32,7 +34,7 @@ namespace EBill.Controllers
 
                 return Json(new
                 {
-                    Status = "Success",
+                    Status = "Failed",
                     Message = "Supplier details is empty!!"
 
                 });
@@ -107,6 +109,174 @@ namespace EBill.Controllers
 
             return cretedBy;
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllData()
+        {
+
+            var data = await _context.suppliers.Where(x => x.status == true).ToListAsync();
+
+            if (data.Count > 0) {
+
+                var suppliers = data.Select(x => new SupplierReadDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Address = x.Address,
+                    ContactPerson = x.ContactPerson,
+                    EmailAddress = x.EmailAddress,
+                    PhoneNumber = x.PhoneNumber,
+                    CreatedBy = x.CreatedBy == 1 ? "Admin" : "Manager",
+                    CreatedDate = x.CreatedDate.ToString(),
+                    LastModifiedBy = x.LastModifiedBy == null ? "" : x.LastModifiedBy == 1 ? "Admin" : "Manager",
+                    LastModifiedDate = x.LastModifiedDate.ToString()
+
+
+                });
+
+
+                return Json(new
+                {
+                    Status = "Success",
+                    Data = suppliers
+
+                });
+
+            }
+
+            return Json(new
+            {
+                Status = "Failed",
+                Message = "Data not found" +
+                "!"
+
+            });
+
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteSupplier(int id)
+        {
+
+            var data = await GetById(id);
+            if(data == null)
+            {
+                return Json(new
+                {
+                    Status = "Failed",
+                    Message = "Supplier is not found!!"
+                });
+            }
+
+            data.status = false;
+            await _context.SaveChangesAsync();
+
+            return Json(new
+            {
+                Status = "Success",
+                Message = "Supplier Deleted Successfully!!"
+            });
+
+        }
+
+        public async Task<Supplier> GetById(int id)
+        {
+            var data = await _context.suppliers.FirstOrDefaultAsync(x => x.Id == id);
+            return data;
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetDataById(int id)
+        {
+
+            var data = await GetById(id);
+            if (data == null)
+            {
+                return Json(new
+                {
+                    Status = "Failed",
+                    Message = "Supplier is not found!!"
+                });
+            }
+
+            var supplier = new SupplierReadDto
+            {
+                Id = data.Id,
+                Name = data.Name,
+                Address = data.Address,
+                ContactPerson = data.ContactPerson,
+                EmailAddress = data.EmailAddress,
+                PhoneNumber = data.PhoneNumber,
+                CreatedBy = data.CreatedBy == 1 ? "Admin" : "Manager",
+                CreatedDate = data.CreatedDate.ToString(),
+                LastModifiedBy = data.LastModifiedBy == null ? "" : data.LastModifiedBy == 1 ? "Admin" : "Manager",
+                LastModifiedDate = data.LastModifiedDate.ToString()
+
+            };
+          
+
+            return Json(new
+            {
+                Status = "Success",
+                Data = supplier
+            });
+
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateSuppliers(SupplierUpdateDto request)
+        {
+            if (request == null)
+            {
+                return Json(new
+                {
+                    Status = "Failed",
+                    Message = "Supplier details is empty!!"
+
+                });
+
+
+            }
+
+            var data = await GetById(request.Id);
+
+            if (data == null)
+            {
+                return Json(new
+                {
+                    Status = "Failed",
+                    Message = "Supplier details is empty!!"
+
+                });
+
+
+            }
+
+            data.Address = request.Address;
+            data.ContactPerson = request.ContactPerson;
+            data.EmailAddress = request.EmailAddress;
+            data.PhoneNumber = request.PhoneNumber;
+            data.Name = request.Name;
+            data.LastModifiedBy = GetCreatedBy();
+            data.LastModifiedDate = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+
+            return Json(new
+            {
+                Status = "Success",
+                Message = "Supplier Updated Successfully!!"
+
+            });
+
+
+
+        }
+
+
     }
 
 

@@ -56,7 +56,7 @@
              name: $("#txtName").val(),
              contactPerson: $("#txtcontactPerson").val(),
              phoneNumber: $("#txtphoneNumber").val(),
-             email: $("#txtemail").val(),
+             emailAddress: $("#txtemail").val(),
              address: $("#txtaddress").val()
          }
 
@@ -83,7 +83,7 @@
              isValid = false;
          }
 
-         if (!obj.email) {
+         if (!obj.emailAddress) {
             $('#txtemailError').text("Please Enter Email!");
              isValid = false;
          }
