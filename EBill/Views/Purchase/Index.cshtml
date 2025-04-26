@@ -1,0 +1,64 @@
+﻿﻿<div class="container">
+    <h2 class="text-center my-4">Purchase Management</h2>
+
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>S.N.</th>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>SubTotal</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="tblPurchaseBody">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="ddlProductName" class="form-label">Product</label>
+                    <select id="ddlProductName" class="form-control"></select>
+                    <span id="ddlProductNameError" class="text-danger d-none">Product is required.</span>
+                </div>
+
+                <div class="mb-3">
+                    <label for="txtQuantity" class="form-label">Quantity</label>
+                    <input id="txtQuantity" type="number" class="form-control" />
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="ddlSupplierId" class="form-label">Supplier</label>
+                    <select id="ddlSupplierId" class="form-control"></select>
+                    <span id="supplierIdErrorMsg" class="text-danger d-none">Supplier id is required.</span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Grand Total</label>
+                    <h4 id="hdGrandTotal">0</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 offset-md-3 d-flex gap-2">
+                <button id="btnPurchaseSave" type="button" class="btn btn-success w-50">Save</button>
+                <a class="btn btn-danger w-50">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+ @section Scripts {
+    <script src="~/js/purchase.js" asp-append-version="true"></script>
+ }
